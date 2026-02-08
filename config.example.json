@@ -4,6 +4,7 @@
 		"port": 27017,
 		"database": "domainrouting"
 	},
-	"outputFile": "/etc/nginx/sites-enabled/generated-domains.conf",
-	"nginxRestartCommand": "systemctl restart nginx"
+	"outputFile": "/etc/nginx/conf.d/generated-domains.conf",
+	"nginxRestartCommand": "systemctl restart nginx",
+	"verbose": false
 }
