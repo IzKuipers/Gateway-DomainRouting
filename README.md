@@ -1,42 +1,11 @@
-# sv
+# Gateway Domain Routing
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+This project is written for the Gateway SRV05 server of my home infrastructure. The Gateway server is responsible for receiving the incoming HTTP traffic and routing it to the various servers in the infrastructure. Currently this routing is handled with a bash file and a handful of text files each containing a list of (sub-)domains, but I'd like to be able to manage these domains from my web browsers so that I don't have to crack open a terminal every time I want to reroute a domain or whatever the case may be.
 
-## Creating a project
+## Author
 
-If you're seeing this, you've probably already done this step. Congrats!
+Izaak Kuipers <izaak.kuipers@gmail.com>
 
-```sh
-# create a new project
-npx sv create my-app
-```
+## License
 
-To recreate this project with the same configuration:
-
-```sh
-# recreate this project
-npx sv create --template minimal --types ts --add prettier --install yarn .
-```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```sh
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```sh
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+MIT
