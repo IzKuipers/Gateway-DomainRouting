@@ -1,0 +1,9 @@
+{
+	"mongo": {
+		"hostname": "localhost",
+		"port": 27017,
+		"database": "domainrouting"
+	},
+	"outputFile": "/etc/nginx/sites-enabled/generated-domains.conf",
+	"nginxRestartCommand": "systemctl restart nginx"
+}
