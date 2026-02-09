@@ -1,6 +1,6 @@
-import { model, Schema } from 'mongoose';
+import { Document, model, Schema } from 'mongoose';
 
-export interface GatewayDomain {
+export interface GatewayDomain extends Document {
 	server: string; // -> GatewayServer._id
 	value: string;
 	enabled: boolean;

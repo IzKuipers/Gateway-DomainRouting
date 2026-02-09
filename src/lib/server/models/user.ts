@@ -1,7 +1,6 @@
-import { model, Schema } from 'mongoose';
+import { Document, model, Schema } from 'mongoose';
 
-export interface GatewayUser {
-	_id: string;
+export interface GatewayUser extends Document {
 	username: string;
 	passwordHash: string;
 	createdAt: string;

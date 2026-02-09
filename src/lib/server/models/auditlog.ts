@@ -1,22 +1,39 @@
-import { model, Schema } from 'mongoose';
+import { Document, model, Schema } from 'mongoose';
 import type { GatewayDomain } from './domain';
 import type { GatewayServer } from './server';
 import type { GatewayUser } from './user';
 
-export interface AuditLog {
+export interface AuditLog extends Document {
 	userId: string; // -> GatewayUser._id
 	operation: string;
 	affectsServer?: string; // -> GatewayServer._id
 	affectsDomain?: string; // -> GatewayDomain._id
 	createdAt: string;
 	updatedAt: string;
+	extraData?: object;
 }
 
-export interface ExpandedAuditLog extends AuditLog {
+export interface ExpandedAuditLog {
+    _id: string;
 	user: GatewayUser;
 	affectedServer?: GatewayServer;
 	affectedDomain?: GatewayDomain;
+	userId: string; // -> GatewayUser._id
+	operation: string;
+	affectsServer?: string; // -> GatewayServer._id
+	affectsDomain?: string; // -> GatewayDomain._id
+	createdAt: string;
+	updatedAt: string;
+	extraData?: object;
 }
+
+export interface AuditOptions {
+	affectsServer?: string;
+	affectsDomain?: string;
+	extraData?: object;
+}
+
+export const DefaultAuditOptions: AuditOptions = {};
 
 const schema = new Schema<AuditLog>(
 	{
@@ -33,6 +50,10 @@ const schema = new Schema<AuditLog>(
 		},
 		affectsDomain: {
 			type: String
+		},
+		extraData: {
+			type: Object,
+			default: {}
 		}
 	},
 	{ timestamps: true }
