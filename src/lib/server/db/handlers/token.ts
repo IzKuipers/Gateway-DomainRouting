@@ -1,15 +1,15 @@
 import { CommandResult } from '$lib/result';
 import { randomUUID } from 'crypto';
 import { Tokens, type GatewayToken } from '../../models/token';
-import { type GatewayUser, Users } from '../../models/user';
-import { AuditLogHandler } from './auditlog';
+import { Users, type GatewayUser } from '../../models/user';
 import { DatabaseHandler } from '../handler';
+import { AuditLogHandler } from './auditlog';
 
 export class TokenHandler extends DatabaseHandler<GatewayToken>() {
-    static db = Tokens;
+	static db = Tokens;
 
 	static async createToken(userId: string) {
-        this.LogInfo(`createToken: ${userId}`);
+		this.LogInfo(`createToken: ${userId}`);
 
 		return await this.db.create({
 			userId,
@@ -18,7 +18,7 @@ export class TokenHandler extends DatabaseHandler<GatewayToken>() {
 	}
 
 	static async getUserByToken(value: string) {
-        this.LogInfo(`getUserByToken: ${value}`);
+		this.LogInfo(`getUserByToken: ${value}`);
 
 		const token = await this.db.findOne({ value });
 		if (!token) return CommandResult.Error(`Invalid token`);

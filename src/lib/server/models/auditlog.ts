@@ -14,7 +14,7 @@ export interface AuditLog extends Document {
 }
 
 export interface ExpandedAuditLog {
-    _id: string;
+	_id: string;
 	user: GatewayUser;
 	affectedServer?: GatewayServer;
 	affectedDomain?: GatewayDomain;

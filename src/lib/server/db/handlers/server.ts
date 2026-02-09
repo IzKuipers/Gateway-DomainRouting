@@ -1,9 +1,9 @@
 import { CommandResult } from '$lib/result';
 import type { UpdateWriteOpResult } from 'mongoose';
 import { type GatewayServer, Servers } from '../../models/server';
-import { DomainHandler } from './domain';
-import { AuditLogHandler } from './auditlog';
 import { DatabaseHandler } from '../handler';
+import { AuditLogHandler } from './auditlog';
+import { DomainHandler } from './domain';
 
 export class ServerHandler extends DatabaseHandler<GatewayServer>() {
 	static db = Servers;
@@ -36,11 +36,7 @@ export class ServerHandler extends DatabaseHandler<GatewayServer>() {
 		}
 	}
 
-	static async updateDomain(
-		auditor: string,
-		domainId: string,
-		update: Partial<GatewayServer>
-	): Promise<CommandResult<UpdateWriteOpResult>> {
+	static async updateDomain(auditor: string, domainId: string, update: Partial<GatewayServer>): Promise<CommandResult<UpdateWriteOpResult>> {
 		this.LogInfo(`updateDomain: ${domainId}`);
 
 		await AuditLogHandler.Audit(auditor, 'Updated a domain', { affectsDomain: domainId });
@@ -49,7 +45,7 @@ export class ServerHandler extends DatabaseHandler<GatewayServer>() {
 	}
 
 	static async deleteServerById(auditor: string, serverId: string) {
-        this.LogInfo(`deleteServerById: ${serverId}`);
+		this.LogInfo(`deleteServerById: ${serverId}`);
 
 		const result = await this.db.findOneAndDelete({ _id: serverId });
 

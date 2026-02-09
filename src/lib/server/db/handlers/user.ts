@@ -1,9 +1,9 @@
 import { CommandResult } from '$lib/result';
 import argon2 from 'argon2';
 import { type GatewayUser, Users } from '../../models/user';
+import { DatabaseHandler } from '../handler';
 import { AuditLogHandler } from './auditlog';
 import { TokenHandler } from './token';
-import { DatabaseHandler } from '../handler';
 
 export class UserHandler extends DatabaseHandler<GatewayUser>() {
 	static db = Users;
@@ -31,10 +31,7 @@ export class UserHandler extends DatabaseHandler<GatewayUser>() {
 	static async resetUserPassword(auditor: string, userId: string, newPassword: string) {
 		await AuditLogHandler.Audit(auditor, `Reset password of user ${userId}`);
 
-		return await this.db.updateOne(
-			{ _id: userId },
-			{ passwordHash: await this.hashPassword(newPassword) }
-		);
+		return await this.db.updateOne({ _id: userId }, { passwordHash: await this.hashPassword(newPassword) });
 	}
 
 	static async hashPassword(password: string) {

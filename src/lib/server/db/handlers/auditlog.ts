@@ -4,13 +4,7 @@
  */
 
 import { CommandResult } from '$lib/result';
-import {
-	AuditLogs,
-	DefaultAuditOptions,
-	type AuditLog,
-	type AuditOptions,
-	type ExpandedAuditLog
-} from '../../models/auditlog';
+import { AuditLogs, DefaultAuditOptions, type AuditLog, type AuditOptions, type ExpandedAuditLog } from '../../models/auditlog';
 import { DatabaseHandler } from '../handler';
 import { DomainHandler } from './domain';
 import { ServerHandler } from './server';
@@ -52,11 +46,7 @@ export class AuditLogHandler extends DatabaseHandler<AuditLog>() {
 	/**
 	 * @throws
 	 */
-	static async Audit(
-		auditor: string,
-		operation: string,
-		options: AuditOptions = DefaultAuditOptions
-	) {
+	static async Audit(auditor: string, operation: string, options: AuditOptions = DefaultAuditOptions) {
 		this.LogInfo(`Audit: ${auditor} did ${operation}`);
 
 		return await this.db.create({
