@@ -18,7 +18,7 @@ export class TokenHandler extends DatabaseHandler<GatewayToken>() {
 	}
 
 	static async getUserByToken(value: string) {
-		this.LogInfo(`getUserByToken: ${value}`);
+		this.LogVerbose(`getUserByToken: ${value}`);
 
 		const token = await this.db.findOne({ value });
 		if (!token) return CommandResult.Error(`Invalid token`);
@@ -30,12 +30,16 @@ export class TokenHandler extends DatabaseHandler<GatewayToken>() {
 	}
 
 	static async deleteAllTokens(auditor: string) {
+		this.LogWarning(`deleteAllTokens`);
+
 		await AuditLogHandler.Audit(auditor, 'Deleted all tokens');
 
 		return await this.db.deleteMany({});
 	}
 
 	static async deleteUserTokens(auditor: string, userId: string) {
+		this.LogWarning(`deleteUserTokens: ${userId}`);
+
 		await AuditLogHandler.Audit(auditor, `Deleted tokens of ${userId}`);
 
 		return await this.db.deleteMany({ userId });

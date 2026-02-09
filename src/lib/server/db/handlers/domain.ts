@@ -57,7 +57,7 @@ export class DomainHandler extends DatabaseHandler<GatewayDomain>() {
 	}
 
 	static async deleteDomain(auditor: string, domainId: string): Promise<CommandResult<GatewayDomain>> {
-		this.LogInfo(`deleteDomain: ${domainId}`);
+		this.LogWarning(`deleteDomain: ${domainId}`);
 
 		const deletedDomain = await this.db.findOneAndDelete({ _id: domainId });
 
@@ -72,7 +72,7 @@ export class DomainHandler extends DatabaseHandler<GatewayDomain>() {
 	}
 
 	static async deleteDomainsByServerId(auditor: string, serverId: string): Promise<CommandResult<DeleteResult>> {
-		this.LogInfo(`deleteDomainsByServerId: ${serverId}`);
+		this.LogWarning(`deleteDomainsByServerId: ${serverId}`);
 
 		const domains = (await this.getDomainsOfServer(serverId)).map((s) => s.toJSON());
 

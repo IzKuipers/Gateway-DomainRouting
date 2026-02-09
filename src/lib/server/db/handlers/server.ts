@@ -45,7 +45,7 @@ export class ServerHandler extends DatabaseHandler<GatewayServer>() {
 	}
 
 	static async deleteServerById(auditor: string, serverId: string) {
-		this.LogInfo(`deleteServerById: ${serverId}`);
+		this.LogWarning(`deleteServerById: ${serverId}`);
 
 		const result = await this.db.findOneAndDelete({ _id: serverId });
 
