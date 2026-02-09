@@ -5,7 +5,7 @@ export interface GatewayUser extends Document {
 	passwordHash: string;
 	createdAt: string;
 	updatedAt: string;
-  enabled: boolean;
+	enabled: boolean;
 }
 
 const schema = new Schema<GatewayUser>(
@@ -19,10 +19,10 @@ const schema = new Schema<GatewayUser>(
 			type: String,
 			required: true
 		},
-    enabled: {
-      type: Boolean,
-      required: false
-    }
+		enabled: {
+			type: Boolean,
+			required: false
+		}
 	},
 	{ timestamps: true }
 );

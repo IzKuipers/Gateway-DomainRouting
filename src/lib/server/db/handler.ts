@@ -20,6 +20,10 @@ export function DatabaseHandler<T extends Document = Document>() {
 			return (await this.getAll()).map((r) => r.toJSON()) as T[];
 		}
 
+		static async getOneById(id: string): Promise<T | null> {
+			return await this.db.findById(id);
+		}
+
 		static LogInfo(msg: string, ...a: unknown[]) {
 			Logger.info(`${this.db.modelName}: ${msg}`, ...a);
 		}

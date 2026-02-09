@@ -1,22 +1,26 @@
 import { CommandResult } from '$lib/result';
 import argon2 from 'argon2';
+import type { DeleteResult, UpdateWriteOpResult } from 'mongoose';
 import { type GatewayUser, Users } from '../../models/user';
 import { DatabaseHandler } from '../handler';
 import { AuditLogHandler } from './auditlog';
 import { TokenHandler } from './token';
-import type { Model, UpdateWriteOpResult } from 'mongoose';
 
 export class UserHandler extends DatabaseHandler<GatewayUser>() {
 	static db = Users;
 
-	static async createUser(username: string, password: string) {
+	static async getOneByUsername(username: string) {
+		return await this.db.findOne({ username: this.normalizeUsername(username) });
+	}
+
+	static async createUser(username: string, password: string): Promise<CommandResult<GatewayUser>> {
 		this.LogInfo(`createUser: ${username}`);
 
 		const enabledUsersCount = await this.db.countDocuments({ enabled: true });
 
 		try {
 			const result = await this.db.create({
-				username,
+				username: this.normalizeUsername(username),
 				passwordHash: await this.hashPassword(password),
 				enabled: enabledUsersCount === 0
 			});
@@ -30,23 +34,31 @@ export class UserHandler extends DatabaseHandler<GatewayUser>() {
 	static async deleteUser(auditor: string, userId: string) {
 		this.LogWarning(`deleteUser: ${userId}`);
 
+		const user = await this.getOneById(userId);
+		if (!user) return CommandResult.Error('User not found');
+
 		await AuditLogHandler.Audit(auditor, `Deleted user ${userId}`);
 		await TokenHandler.deleteUserTokens(auditor, userId);
 
-		return await this.db.deleteOne({ _id: userId });
+		return CommandResult.Ok<DeleteResult>(await this.db.deleteOne({ _id: userId }));
 	}
 
 	static async resetUserPassword(auditor: string, userId: string, newPassword: string) {
 		this.LogWarning(`resetUserPassword: ${userId}`);
 
+		const user = await this.getOneById(userId);
+		if (!user) return CommandResult.Error('User not found');
+
 		await AuditLogHandler.Audit(auditor, `Reset password of user ${userId}`);
 
-		return await this.db.updateOne({ _id: userId }, { passwordHash: await this.hashPassword(newPassword) });
+		return CommandResult.Ok<UpdateWriteOpResult>(await this.db.updateOne({ _id: userId }, { passwordHash: await this.hashPassword(newPassword) }));
 	}
 
 	static async enableUser(auditor: string, userId: string): Promise<CommandResult<UpdateWriteOpResult>> {
 		const existing = await this.db.findOne({ _id: userId });
+		const user = await this.getOneById(userId);
 
+		if (!user) return CommandResult.Error('User not found');
 		if (auditor == userId) return CommandResult.Error('Enablement on yourself is illegal.');
 		if (!existing || existing.enabled) return CommandResult.Error("Can't enable a user that is already enabled");
 
@@ -60,6 +72,8 @@ export class UserHandler extends DatabaseHandler<GatewayUser>() {
 	static async disableUser(auditor: string, userId: string): Promise<CommandResult<UpdateWriteOpResult>> {
 		const existing = await this.db.findOne({ _id: userId });
 
+		const user = await this.getOneById(userId);
+		if (!user) return CommandResult.Error('User not found');
 		if (auditor == userId) return CommandResult.Error('Enablement on yourself is illegal.');
 		if (!existing || !existing.enabled) return CommandResult.Error("Can't disable a user that is already disabled");
 

@@ -36,19 +36,21 @@ export class ServerHandler extends DatabaseHandler<GatewayServer>() {
 		}
 	}
 
-	static async updateDomain(auditor: string, domainId: string, update: Partial<GatewayServer>): Promise<CommandResult<UpdateWriteOpResult>> {
-		this.LogInfo(`updateDomain: ${domainId}`);
+	static async updateServer(auditor: string, serverId: string, update: Partial<GatewayServer>): Promise<CommandResult<UpdateWriteOpResult>> {
+		this.LogInfo(`updateServer: ${serverId}`);
 
-		await AuditLogHandler.Audit(auditor, 'Updated a domain', { affectsDomain: domainId });
+		const server = await this.getOneById(serverId);
+		if (!server) return CommandResult.Error(`Server not found`);
 
-		return CommandResult.Ok(await this.db.updateOne({ _id: domainId }, update));
+		await AuditLogHandler.Audit(auditor, 'Updated a domain', { affectsServer: serverId });
+
+		return CommandResult.Ok(await this.db.updateOne({ _id: serverId }, update));
 	}
 
 	static async deleteServerById(auditor: string, serverId: string) {
 		this.LogWarning(`deleteServerById: ${serverId}`);
 
 		const result = await this.db.findOneAndDelete({ _id: serverId });
-
 		if (!result) return CommandResult.Error(`Failed to delete server ${serverId}: not found`);
 
 		await DomainHandler.deleteDomainsByServerId(auditor, serverId);
