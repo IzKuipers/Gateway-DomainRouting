@@ -1,11 +1,11 @@
 import { CommandResult } from '$lib/result';
 import { randomUUID } from 'crypto';
-import { Tokens } from '../../models/token';
+import { Tokens, type GatewayToken } from '../../models/token';
 import { type GatewayUser, Users } from '../../models/user';
 import { AuditLogHandler } from './auditlog';
 import { DatabaseHandler } from '../handler';
 
-export class TokenHandler extends DatabaseHandler {
+export class TokenHandler extends DatabaseHandler<GatewayToken>() {
     static db = Tokens;
 
 	static async createToken(userId: string) {

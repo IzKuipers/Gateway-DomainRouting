@@ -5,8 +5,8 @@ import { AuditLogHandler } from './auditlog';
 import { TokenHandler } from './token';
 import { DatabaseHandler } from '../handler';
 
-export class UserHandler extends DatabaseHandler{
-    static db = Users;
+export class UserHandler extends DatabaseHandler<GatewayUser>() {
+	static db = Users;
 
 	static async createUser(username: string, password: string) {
 		try {

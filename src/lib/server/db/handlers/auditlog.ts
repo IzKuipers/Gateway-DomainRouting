@@ -4,33 +4,29 @@
  */
 
 import { CommandResult } from '$lib/result';
-import type { Model } from 'mongoose';
 import {
-    AuditLogs,
-    DefaultAuditOptions,
-    type AuditLog,
-    type AuditOptions,
-    type ExpandedAuditLog
+	AuditLogs,
+	DefaultAuditOptions,
+	type AuditLog,
+	type AuditOptions,
+	type ExpandedAuditLog
 } from '../../models/auditlog';
-import type { GatewayDomain } from '../../models/domain';
-import type { GatewayServer } from '../../models/server';
-import type { GatewayUser } from '../../models/user';
-import { DomainHandler } from './domain';
 import { DatabaseHandler } from '../handler';
+import { DomainHandler } from './domain';
 import { ServerHandler } from './server';
 import { UserHandler } from './user';
 
-export class AuditLogHandler extends DatabaseHandler {
-	static db: Model<AuditLog> = AuditLogs;
+export class AuditLogHandler extends DatabaseHandler<AuditLog>() {
+	static db = AuditLogs;
 
 	static async getAuditLog(): Promise<CommandResult<ExpandedAuditLog[]>> {
 		this.LogDebug('getAuditLog');
 
 		try {
 			const logs = await this.db.find({});
-			const users = await UserHandler.getAllSerializable<GatewayUser>();
-			const domains = await DomainHandler.getAllSerializable<GatewayDomain>();
-			const servers = await ServerHandler.getAllSerializable<GatewayServer>();
+			const users = await UserHandler.getAllSerializable();
+			const domains = await DomainHandler.getAllSerializable();
+			const servers = await ServerHandler.getAllSerializable();
 
 			const expanded: ExpandedAuditLog[] = logs.map((l) => ({
 				_id: l._id.toString(),

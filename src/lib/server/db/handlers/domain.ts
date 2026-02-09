@@ -4,8 +4,8 @@ import { Domains, type GatewayDomain } from '../../models/domain';
 import { AuditLogHandler } from './auditlog';
 import { DatabaseHandler } from '../handler';
 
-export class DomainHandler extends DatabaseHandler {
-	static db: Model<GatewayDomain> = Domains;
+export class DomainHandler extends DatabaseHandler<GatewayDomain>() {
+	static db = Domains;
 
 	static async getDomainsOfServer(serverId: string) {
 		this.LogVerbose(`getDomainsOfServer: ${serverId}`);

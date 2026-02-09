@@ -5,7 +5,7 @@ import { DomainHandler } from './domain';
 import { AuditLogHandler } from './auditlog';
 import { DatabaseHandler } from '../handler';
 
-export class ServerHandler extends DatabaseHandler {
+export class ServerHandler extends DatabaseHandler<GatewayServer>() {
 	static db = Servers;
 
 	static async createServer(
