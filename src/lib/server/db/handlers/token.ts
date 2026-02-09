@@ -5,6 +5,8 @@ import { Users, type GatewayUser } from '../../models/user';
 import { DatabaseHandler } from '../handler';
 import { AuditLogHandler } from './auditlog';
 
+// INTERNAL: this handler should not be directly accessible by any endpoints, and is
+// supposed to be accessed by the authentication stuff.
 export class TokenHandler extends DatabaseHandler<GatewayToken>() {
 	static db = Tokens;
 
