@@ -11,7 +11,7 @@ export class DomainHandler extends DatabaseHandler<GatewayDomain>() {
 	static async getDomainsOfServer(serverId: string) {
 		this.LogVerbose(`getDomainsOfServer: ${serverId}`);
 
-		return await this.db.find({ serverId });
+		return await this.db.find({ server: serverId });
 	}
 
 	static async createDomain(auditor: string, serverId: string, value: string, comment?: string): Promise<CommandResult<GatewayDomain>> {
