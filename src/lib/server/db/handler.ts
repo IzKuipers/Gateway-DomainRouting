@@ -1,6 +1,13 @@
 import type { Document, Model } from 'mongoose';
 import { Logger } from '../logging';
 
+/**
+ * Database handler 'factory' for passing T to the static properties/methods of a class.
+ * Taken from GitHub issue #43587 of @microsoft/TypeScript.
+ *
+ * https://github.com/microsoft/TypeScript/issues/43587#issuecomment-815919628
+ */
+
 export function DatabaseHandler<T extends Document = Document>() {
 	abstract class Handler {
 		static db: Model<T>;
@@ -34,5 +41,5 @@ export function DatabaseHandler<T extends Document = Document>() {
 		}
 	}
 
-    return Handler;
+	return Handler;
 }
