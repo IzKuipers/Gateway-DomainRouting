@@ -5,7 +5,7 @@ import type { RequestHandler } from './$types';
 
 export const GET: RequestHandler = async ({ request }) => {
 	await AssumeAuthorization(request);
-	const users = await UserHandler.getAllSerializable();
+	const users = await UserHandler.getAllSerializable({ passwordHash: 0, __v: 0 });
 
 	return json(users);
 };

@@ -6,6 +6,7 @@ export const GET: RequestHandler = async ({ request }) => {
 	const user = await AssumeAuthorization(request);
 
 	return json({
+		_id: user._id.toString(),
 		username: user.username,
 		createdAt: user.createdAt,
 		updatedAt: user.updatedAt,

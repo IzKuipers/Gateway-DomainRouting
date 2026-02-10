@@ -61,4 +61,20 @@ export class ServerHandler extends DatabaseHandler<GatewayServer>() {
 
 		return CommandResult.Ok<GatewayServer>(result, 'Server deleted successfully');
 	}
+
+	static async getStatistics(): Promise<CommandResult<Record<string, number>>> {
+		try {
+			const servers = await this.getAllSerializable();
+			const domains = await DomainHandler.getAllSerializable();
+			const result: Record<string, number> = {};
+
+			for (const server of servers) {
+				result[server._id.toString()] = domains.filter((d) => d.server === server._id.toString()).length;
+			}
+
+			return CommandResult.Ok(result);
+		} catch (e) {
+			return CommandResult.Error(`Failed to obtain server statistics: ${e}`);
+		}
+	}
 }

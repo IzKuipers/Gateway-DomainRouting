@@ -67,7 +67,7 @@ export class DomainHandler extends DatabaseHandler<GatewayDomain>() {
 			affectsServer: newServerId
 		});
 
-		return CommandResult.Ok(await this.db.updateOne({ _id: domainId }, { serverId: newServerId }));
+		return CommandResult.Ok(await this.db.updateOne({ _id: domainId }, { server: newServerId }));
 	}
 
 	static async deleteDomain(auditor: string, domainId: string): Promise<CommandResult<GatewayDomain>> {
@@ -95,6 +95,6 @@ export class DomainHandler extends DatabaseHandler<GatewayDomain>() {
 			extraData: domains
 		});
 
-		return CommandResult.Ok(await this.db.deleteMany({ serverId }));
+		return CommandResult.Ok(await this.db.deleteMany({ server: serverId }));
 	}
 }

@@ -1,4 +1,4 @@
-import type { Document, Model } from 'mongoose';
+import type { Document, Model, ProjectionType } from 'mongoose';
 import { Logger } from '../logging';
 
 /**
@@ -12,12 +12,12 @@ export function DatabaseHandler<T extends Document = Document>() {
 	abstract class Handler {
 		static db: Model<T>;
 
-		static async getAll() {
-			return (await this.db.find({})) as T[];
+		static async getAll(projection?: ProjectionType<T>) {
+			return (await this.db.find({}, projection)) as T[];
 		}
 
-		static async getAllSerializable() {
-			return (await this.getAll()).map((r) => r.toJSON()) as T[];
+		static async getAllSerializable(projection?: ProjectionType<T>) {
+			return (await this.getAll(projection)).map((r) => r.toJSON()) as T[];
 		}
 
 		static async getOneById(id: string): Promise<T | null> {

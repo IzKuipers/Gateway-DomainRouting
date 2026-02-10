@@ -6,6 +6,9 @@ import type { RequestHandler } from './$types';
 export const PATCH: RequestHandler = async ({ request, params: { domainId } }) => {
 	const user = await AssumeAuthorization(request);
 	const { newServerId } = await request.json();
+
+	if (!newServerId) throw error(400, 'Missing new server id');
+
 	const result = await DomainHandler.moveDomain(user._id.toString(), domainId, newServerId);
 
 	if (!result.success) throw error(400, result.errorMessage ?? 'Unknown error while moving domain');

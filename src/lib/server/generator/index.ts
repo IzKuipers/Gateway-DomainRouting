@@ -44,6 +44,8 @@ server {
 		let result = `\n# ==== DOMAINS FOR ${server.serverName} ${server.displayName} ====\n`;
 
 		for (const domain of domains) {
+			if (!domain.enabled) continue; // Skip disabled domains
+
 			result += await this.generateDomainConfig(domain, server);
 		}
 
