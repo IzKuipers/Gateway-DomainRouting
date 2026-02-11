@@ -15,19 +15,21 @@ export class CommandResult<T = string> {
 	public errorMessage?: string;
 	public successMessage?: string;
 	public success = false;
+	public statusCode?: number;
 
 	constructor(result?: T, options: CommandResultOptions = DefaultCommandResultOptions) {
 		this.result = result;
 		this.successMessage = options.successMessage;
 		this.errorMessage = options.errorMessage;
 		this.success = options.success ?? false;
+		this.statusCode = options.statusCode ?? 200;
 	}
 
-	static Ok<T>(value: T, successMessage?: string) {
-		return new this<T>(value, { success: true, successMessage });
+	static Ok<T>(value: T, successMessage?: string, statusCode?: number) {
+		return new this<T>(value, { success: true, successMessage, statusCode });
 	}
 
-	static Error<T = any>(errorMessage: string) {
-		return new this<T>(undefined, { errorMessage });
+	static Error<T = any>(errorMessage: string, statusCode?: number) {
+		return new this<T>(undefined, { errorMessage, statusCode });
 	}
 }

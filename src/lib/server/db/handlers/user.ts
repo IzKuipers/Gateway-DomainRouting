@@ -16,6 +16,9 @@ export class UserHandler extends DatabaseHandler<GatewayUser>() {
 	static async createUser(username: string, password: string): Promise<CommandResult<GatewayUser>> {
 		this.LogInfo(`createUser: ${username}`);
 
+		const existing = await this.getOneByUsername(username);
+		if (existing) return CommandResult.Error('User already exists', 409);
+
 		const enabledUsersCount = await this.db.countDocuments({ enabled: true });
 
 		try {
@@ -27,7 +30,7 @@ export class UserHandler extends DatabaseHandler<GatewayUser>() {
 
 			return CommandResult.Ok<GatewayUser>(result);
 		} catch (e) {
-			return CommandResult.Error(`Failed to create user account: ${e}`);
+			return CommandResult.Error(`Failed to create user account: ${e}`, 500);
 		}
 	}
 
@@ -35,7 +38,7 @@ export class UserHandler extends DatabaseHandler<GatewayUser>() {
 		this.LogWarning(`deleteUser: ${userId}`);
 
 		const user = await this.getOneById(userId);
-		if (!user) return CommandResult.Error('User not found');
+		if (!user) return CommandResult.Error('User not found', 404);
 
 		await AuditLogHandler.Audit(auditor, `Deleted user ${userId}`);
 		await TokenHandler.deleteUserTokens(auditor, userId);
@@ -47,7 +50,7 @@ export class UserHandler extends DatabaseHandler<GatewayUser>() {
 		this.LogWarning(`resetUserPassword: ${userId}`);
 
 		const user = await this.getOneById(userId);
-		if (!user) return CommandResult.Error('User not found');
+		if (!user) return CommandResult.Error('User not found', 404);
 
 		await AuditLogHandler.Audit(auditor, `Reset password of user ${userId}`);
 
@@ -58,9 +61,9 @@ export class UserHandler extends DatabaseHandler<GatewayUser>() {
 		const existing = await this.db.findOne({ _id: userId });
 		const user = await this.getOneById(userId);
 
-		if (!user) return CommandResult.Error('User not found');
-		if (auditor == userId) return CommandResult.Error('Enablement on yourself is illegal.');
-		if (!existing || existing.enabled) return CommandResult.Error("Can't enable a user that is already enabled");
+		if (!user) return CommandResult.Error('User not found', 404);
+		if (auditor == userId) return CommandResult.Error('Enablement on yourself is illegal.', 400);
+		if (!existing || existing.enabled) return CommandResult.Error("Can't enable a user that is already enabled", 400);
 
 		const result = await this.db.updateOne({ _id: userId }, { enabled: true });
 
@@ -73,9 +76,9 @@ export class UserHandler extends DatabaseHandler<GatewayUser>() {
 		const existing = await this.db.findOne({ _id: userId });
 
 		const user = await this.getOneById(userId);
-		if (!user) return CommandResult.Error('User not found');
-		if (auditor == userId) return CommandResult.Error('Enablement on yourself is illegal.');
-		if (!existing || !existing.enabled) return CommandResult.Error("Can't disable a user that is already disabled");
+		if (!user) return CommandResult.Error('User not found', 404);
+		if (auditor == userId) return CommandResult.Error('Enablement on yourself is illegal.', 400);
+		if (!existing || !existing.enabled) return CommandResult.Error("Can't disable a user that is already disabled", 400);
 
 		const result = await this.db.updateOne({ _id: userId }, { enabled: false });
 

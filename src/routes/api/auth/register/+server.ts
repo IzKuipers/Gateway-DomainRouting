@@ -7,7 +7,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	if (!username || !password) throw error(400, 'Missing username or password');
 
 	const createResult = await UserHandler.createUser(username, password);
-	if (!createResult.success) throw error(400, createResult.errorMessage ?? 'Unknown error while creating user');
+	if (!createResult.success) throw error(createResult.statusCode ?? 500, createResult.errorMessage ?? 'Unknown error while creating user');
 
 	return json({
 		username: createResult.result!.username,

@@ -9,7 +9,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	if (!displayName || !serverName || !address || !port) throw error(400, 'Missing parameters');
 
 	const createResult = await ServerHandler.createServer(user._id.toString(), displayName, serverName, address, +`${port}`);
-	if (!createResult.success) throw error(400, createResult.errorMessage ?? 'Unknown result while creating server');
+	if (!createResult.success) throw error(createResult.statusCode ?? 500, createResult.errorMessage ?? 'Unknown result while creating server');
 
 	return json(createResult.result!);
 };

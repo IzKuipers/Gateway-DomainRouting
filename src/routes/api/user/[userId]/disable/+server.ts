@@ -7,7 +7,7 @@ export const POST: RequestHandler = async ({ request, params: { userId } }) => {
 	const user = await AssumeAuthorization(request);
 	const disableResult = await UserHandler.disableUser(user._id.toString(), userId);
 
-	if (!disableResult.success) throw error(400, disableResult.errorMessage ?? 'Unknown error while disabling user');
+	if (!disableResult.success) throw error(disableResult.statusCode ?? 500, disableResult.errorMessage ?? 'Unknown error while disabling user');
 
 	return json(disableResult.result!);
 };

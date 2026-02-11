@@ -17,6 +17,9 @@ export class ServerHandler extends DatabaseHandler<GatewayServer>() {
 	): Promise<CommandResult<GatewayServer>> {
 		this.LogInfo(`createServer`);
 
+		const existing = await this.getOneByAddressPort(address, port);
+		if (existing) return CommandResult.Error(`Server with network resource ${address}:${port} already exists`, 409);
+
 		try {
 			const result = await this.db.create({
 				displayName,
@@ -32,7 +35,7 @@ export class ServerHandler extends DatabaseHandler<GatewayServer>() {
 
 			return CommandResult.Ok<GatewayServer>(result);
 		} catch (e) {
-			return CommandResult.Error(`Failed to create server entry: ${e}`);
+			return CommandResult.Error(`Failed to create server entry: ${e}`, 500);
 		}
 	}
 
@@ -40,18 +43,18 @@ export class ServerHandler extends DatabaseHandler<GatewayServer>() {
 		this.LogInfo(`updateServer: ${serverId}`);
 
 		const server = await this.getOneById(serverId);
-		if (!server) return CommandResult.Error(`Server not found`);
+		if (!server) return CommandResult.Error(`Server not found`, 404);
 
 		await AuditLogHandler.Audit(auditor, 'Updated a domain', { affectsServer: serverId });
 
 		return CommandResult.Ok(await this.db.updateOne({ _id: serverId }, update));
 	}
 
-	static async deleteServerById(auditor: string, serverId: string) {
+	static async deleteServerById(auditor: string, serverId: string): Promise<CommandResult<GatewayServer>> {
 		this.LogWarning(`deleteServerById: ${serverId}`);
 
 		const result = await this.db.findOneAndDelete({ _id: serverId });
-		if (!result) return CommandResult.Error(`Failed to delete server ${serverId}: not found`);
+		if (!result) return CommandResult.Error(`Failed to delete server ${serverId}: not found`, 404);
 
 		await DomainHandler.deleteDomainsByServerId(auditor, serverId);
 		await AuditLogHandler.Audit(auditor, 'Deleted a server', {
@@ -74,7 +77,11 @@ export class ServerHandler extends DatabaseHandler<GatewayServer>() {
 
 			return CommandResult.Ok(result);
 		} catch (e) {
-			return CommandResult.Error(`Failed to obtain server statistics: ${e}`);
+			return CommandResult.Error(`Failed to obtain server statistics: ${e}`, 500);
 		}
+	}
+
+	static async getOneByAddressPort(address: string, port: number): Promise<GatewayServer | null> {
+		return await this.db.findOne({ address, port });
 	}
 }

@@ -1,0 +1,10 @@
+:root {
+	--background: #222222;
+	--border-clr: #333333;
+	--foreground: #dddddd;
+	--accent: #e04424;
+	--accent-light: #ff693f;
+	--button-bg: #333;
+	--button-hover-bg: #444;
+	--button-active-bg: #1a1a1a;
+}

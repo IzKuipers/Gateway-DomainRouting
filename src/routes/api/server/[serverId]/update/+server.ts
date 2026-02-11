@@ -15,7 +15,7 @@ export const PATCH: RequestHandler = async ({ request, params: { serverId } }) =
 	if (port != undefined && typeof port === 'number' && !Number.isNaN(port)) update.port = port;
 
 	const updateResult = await ServerHandler.updateServer(user._id.toString(), serverId, update);
-	if (!updateResult.success) throw error(400, updateResult.errorMessage ?? 'Unknown error while updating server');
+	if (!updateResult.success) throw error(updateResult.statusCode ?? 400, updateResult.errorMessage ?? 'Unknown error while updating server');
 
 	return json(updateResult.result!);
 };

@@ -15,7 +15,7 @@ export class TokenHandler extends DatabaseHandler<GatewayToken>() {
 		this.LogInfo(`createToken: ${userId}`);
 
 		const user = await UserHandler.getOneById(userId);
-		if (!user?.enabled) return CommandResult.Error(`User not found`);
+		if (!user?.enabled) return CommandResult.Error(`User not found`, 403);
 
 		return CommandResult.Ok<GatewayToken>(
 			(
@@ -29,10 +29,10 @@ export class TokenHandler extends DatabaseHandler<GatewayToken>() {
 
 	static async createTokenWithCredentials(username: string, password: string): Promise<CommandResult<GatewayToken>> {
 		const user = await UserHandler.getOneByUsername(username);
-		if (!user?.enabled) return CommandResult.Error(`User not found`);
+		if (!user?.enabled) return CommandResult.Error(`User not found`, 403);
 
 		const passwordValid = await verify(user.passwordHash, password);
-		if (!passwordValid) return CommandResult.Error(`The password is incorrect`);
+		if (!passwordValid) return CommandResult.Error(`The password is incorrect`, 403);
 
 		return await this.createToken(user._id.toString());
 	}
@@ -41,10 +41,10 @@ export class TokenHandler extends DatabaseHandler<GatewayToken>() {
 		this.LogVerbose(`getUserByToken: ${value}`);
 
 		const token = await this.db.findOne({ value });
-		if (!token) return CommandResult.Error(`Invalid token`);
+		if (!token) return CommandResult.Error(`Invalid token`, 403);
 
 		const user = await Users.findOne({ _id: token.userId });
-		if (!user?.enabled) return CommandResult.Error(`User associated with token not found`);
+		if (!user?.enabled) return CommandResult.Error(`User associated with token not found`, 403);
 
 		await this.db.updateOne({ _id: token._id.toString() }, { createdAt: Date.now() }); // Refresh the token
 
@@ -69,7 +69,7 @@ export class TokenHandler extends DatabaseHandler<GatewayToken>() {
 
 	static async deleteTokenByValue(value: string) {
 		const token = await this.db.findOne({ value });
-		if (!token) return CommandResult.Error('Invalid token');
+		if (!token) return CommandResult.Error('Invalid token', 404);
 
 		return CommandResult.Ok<DeleteResult>(await this.db.deleteOne({ value }));
 	}

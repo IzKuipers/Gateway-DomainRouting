@@ -9,7 +9,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	if (!serverId || !value) throw error(400, 'Missing serverId or value');
 
 	const createResult = await DomainHandler.createDomain(user._id.toString(), serverId, value, comment ?? '');
-	if (!createResult.success) throw error(400, createResult.errorMessage ?? 'Unknown error while creating domain');
+	if (!createResult.success) throw error(createResult.statusCode ?? 500, createResult.errorMessage ?? 'Unknown error while creating domain');
 
 	return json(createResult.result?.toJSON()!);
 };

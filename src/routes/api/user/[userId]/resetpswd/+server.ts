@@ -9,7 +9,7 @@ export const PATCH: RequestHandler = async ({ request, params: { userId } }) => 
 	if (!newPassword) throw error(400, 'Missing new password');
 
 	const resetResult = await UserHandler.resetUserPassword(user._id.toString(), userId, newPassword);
-	if (!resetResult.success) throw error(400, resetResult.errorMessage ?? "Unknown error while resetting user's password");
+	if (!resetResult.success) throw error(resetResult.statusCode ?? 500, resetResult.errorMessage ?? "Unknown error while resetting user's password");
 
 	return json(resetResult.result!);
 };

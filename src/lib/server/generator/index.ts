@@ -34,7 +34,7 @@ server {
 
 			return CommandResult.Ok<string>(result);
 		} catch (e) {
-			return CommandResult.Error(`Failed to generate NGiNX configuration: ${e}`);
+			return CommandResult.Error(`Failed to generate NGiNX configuration: ${e}`, 500);
 		}
 	}
 
@@ -91,19 +91,17 @@ server {
 
 			const restartResult = await this.restartNGiNX();
 
-			if (restartResult !== 0) return CommandResult.Error(`NGiNX restart failed with an exit code of ${restartResult}.`);
+			if (restartResult !== 0) return CommandResult.Error(`NGiNX restart failed with an exit code of ${restartResult}.`, 500);
 
 			return CommandResult.Ok<string>(configuration.result!, 'Configuration updated successfully');
 		} catch (e) {
-			return CommandResult.Error(`Failed to update NGiNX: ${e}`);
+			return CommandResult.Error(`Failed to update NGiNX: ${e}`, 500);
 		}
 	}
 
 	static async restartNGiNX(): Promise<number | null> {
 		return new Promise((r) => {
 			const cp = exec(Configuration.nginxRestartCommand);
-
-			console.log(cp);
 
 			cp.once('exit', () => r(cp.exitCode));
 		});

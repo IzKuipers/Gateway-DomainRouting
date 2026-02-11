@@ -39,7 +39,7 @@ export class AuditLogHandler extends DatabaseHandler<AuditLog>() {
 
 			return CommandResult.Ok<ExpandedAuditLog[]>(expanded);
 		} catch (e) {
-			return CommandResult.Error(`Failed to obtain audit log: ${e}`);
+			return CommandResult.Error(`Failed to obtain audit log: ${e}`, 500);
 		}
 	}
 

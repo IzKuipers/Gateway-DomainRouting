@@ -7,7 +7,7 @@ export const POST: RequestHandler = async ({ request, params: { userId } }) => {
 	const user = await AssumeAuthorization(request);
 	const enableResult = await UserHandler.enableUser(user._id.toString(), userId);
 
-	if (!enableResult.success) throw error(400, enableResult.errorMessage ?? 'Unknown error while enabling user');
+	if (!enableResult.success) throw error(enableResult.statusCode ?? 500, enableResult.errorMessage ?? 'Unknown error while enabling user');
 
 	return json(enableResult.result!);
 };

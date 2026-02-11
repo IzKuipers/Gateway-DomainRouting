@@ -7,7 +7,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	const token = await AssumeAuthorization_ReturnsToken(request);
 	const deleteResult = await TokenHandler.deleteTokenByValue(token);
 
-	if (!deleteResult.success) throw error(400, deleteResult.errorMessage ?? 'Unknown error while deleting token');
+	if (!deleteResult.success) throw error(deleteResult.statusCode ?? 500, deleteResult.errorMessage ?? 'Unknown error while deleting token');
 
 	return json(deleteResult.result!);
 };

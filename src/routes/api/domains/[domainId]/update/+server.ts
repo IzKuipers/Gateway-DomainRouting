@@ -14,7 +14,7 @@ export const PATCH: RequestHandler = async ({ request, params: { domainId } }) =
 	if (comment != undefined && typeof comment === 'string') update.comment = comment;
 
 	const result = await DomainHandler.updateDomain(user._id.toString(), domainId, update);
-	if (!result.success) throw error(404, result.errorMessage ?? 'Unknown error while updating domain');
+	if (!result.success) throw error(result.statusCode ?? 404, result.errorMessage ?? 'Unknown error while updating domain');
 
 	return json(result.result!);
 };

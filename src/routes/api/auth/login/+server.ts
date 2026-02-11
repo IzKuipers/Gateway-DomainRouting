@@ -7,7 +7,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	if (!username || !password) throw error(400, 'Missing username or password');
 
 	const tokenResult = await TokenHandler.createTokenWithCredentials(username, password);
-	if (!tokenResult.success) throw error(403, tokenResult.errorMessage ?? 'Unknown error');
+	if (!tokenResult.success) throw error(tokenResult.statusCode ?? 403, tokenResult.errorMessage ?? 'Unknown error');
 
 	return json(tokenResult.result!);
 };

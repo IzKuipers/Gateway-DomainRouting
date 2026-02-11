@@ -11,7 +11,7 @@ export const PATCH: RequestHandler = async ({ request, params: { domainId } }) =
 
 	const result = await DomainHandler.moveDomain(user._id.toString(), domainId, newServerId);
 
-	if (!result.success) throw error(400, result.errorMessage ?? 'Unknown error while moving domain');
+	if (!result.success) throw error(result.statusCode ?? 500, result.errorMessage ?? 'Unknown error while moving domain');
 
 	return json(result.result!);
 };

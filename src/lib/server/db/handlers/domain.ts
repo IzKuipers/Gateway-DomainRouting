@@ -18,8 +18,10 @@ export class DomainHandler extends DatabaseHandler<GatewayDomain>() {
 		this.LogInfo(`createDomain: ${serverId} -> ${value} (${comment ?? '<no comment>'})`);
 
 		const server = await ServerHandler.getOneById(serverId);
+		if (!server) return CommandResult.Error(`The specified server does not exist`, 404);
 
-		if (!server) return CommandResult.Error(`The specified server does not exist`);
+		const domain = await this.getOneByValue(value);
+		if (domain) return CommandResult.Error(`The domain already exists`, 409);
 
 		try {
 			const result = await this.db.create({
@@ -35,7 +37,7 @@ export class DomainHandler extends DatabaseHandler<GatewayDomain>() {
 
 			return CommandResult.Ok(result);
 		} catch (e) {
-			return CommandResult.Error(`Failed to create domain entry: ${e}`);
+			return CommandResult.Error(`Failed to create domain entry: ${e}`, 500);
 		}
 	}
 
@@ -43,9 +45,9 @@ export class DomainHandler extends DatabaseHandler<GatewayDomain>() {
 		this.LogInfo(`updateDomain: ${domainId}`);
 
 		const domain = await this.getOneById(domainId);
-		if (!domain) return CommandResult.Error(`Domain not found`);
+		if (!domain) return CommandResult.Error(`Domain not found`, 404);
 
-		if (update.server) return CommandResult.Error(`The server of a domain can't be changed.`);
+		if (update.server) return CommandResult.Error(`The server of a domain can't be changed.`, 400);
 
 		await AuditLogHandler.Audit(auditor, 'Updated a domain', {
 			affectsDomain: domainId,
@@ -57,10 +59,10 @@ export class DomainHandler extends DatabaseHandler<GatewayDomain>() {
 
 	static async moveDomain(auditor: string, domainId: string, newServerId: string): Promise<CommandResult<UpdateWriteOpResult>> {
 		const domain = await this.getOneById(domainId);
-		if (!domain) return CommandResult.Error(`Domain not found`);
+		if (!domain) return CommandResult.Error(`Domain not found`, 404);
 
 		const server = await ServerHandler.getOneById(newServerId);
-		if (!server) return CommandResult.Error(`Server not found`);
+		if (!server) return CommandResult.Error(`Server not found`, 404);
 
 		await AuditLogHandler.Audit(auditor, `Moved a domain to ${newServerId}`, {
 			affectsDomain: domainId,
@@ -74,7 +76,7 @@ export class DomainHandler extends DatabaseHandler<GatewayDomain>() {
 		this.LogWarning(`deleteDomain: ${domainId}`);
 
 		const deletedDomain = await this.db.findOneAndDelete({ _id: domainId });
-		if (!deletedDomain) return CommandResult.Error(`Failed to delete domain ${domainId}: the domain doesn't exist.`);
+		if (!deletedDomain) return CommandResult.Error(`Failed to delete domain ${domainId}: the domain doesn't exist.`, 404);
 
 		await AuditLogHandler.Audit(auditor, 'Deleted a domain', {
 			affectsDomain: domainId,
@@ -88,7 +90,7 @@ export class DomainHandler extends DatabaseHandler<GatewayDomain>() {
 		this.LogWarning(`deleteDomainsByServerId: ${serverId}`);
 
 		const domains = (await this.getDomainsOfServer(serverId)).map((s) => s.toJSON());
-		if (!domains.length) return CommandResult.Error(`Failed to delete the domains of ${serverId}: none were found.`);
+		if (!domains.length) return CommandResult.Error(`Failed to delete the domains of ${serverId}: none were found.`, 404);
 
 		await AuditLogHandler.Audit(auditor, 'Deleted domains of server', {
 			affectsServer: serverId,
@@ -96,5 +98,9 @@ export class DomainHandler extends DatabaseHandler<GatewayDomain>() {
 		});
 
 		return CommandResult.Ok(await this.db.deleteMany({ server: serverId }));
+	}
+
+	static async getOneByValue(value: string): Promise<GatewayDomain | null> {
+		return await this.db.findOne({ value });
 	}
 }

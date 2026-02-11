@@ -6,8 +6,8 @@ import type { RequestHandler } from './$types';
 export const GET: RequestHandler = async ({ request }) => {
 	await AssumeAuthorization(request);
 	const logResult = await AuditLogHandler.getAuditLog();
-    
-	if (!logResult.success) throw error(500, logResult.errorMessage ?? 'Unknown error obtaining audit log');
+
+	if (!logResult.success) throw error(logResult.statusCode ?? 500, logResult.errorMessage ?? 'Unknown error obtaining audit log');
 
 	return json(logResult.result);
 };
