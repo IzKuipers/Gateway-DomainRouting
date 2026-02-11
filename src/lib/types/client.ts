@@ -93,4 +93,16 @@ export namespace ClientTypes {
 			port?: number;
 		}
 	}
+
+  export interface DialogData {
+    title: string;
+    message: string;
+    icon: string;
+    buttons: DialogButton[];
+  }
+
+  export interface DialogButton {
+    caption: string;
+    action: () => void;
+  }
 }

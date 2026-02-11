@@ -28,5 +28,5 @@
 		<button class="login" onclick={login} disabled={!username || !password}>Login</button>
 		<button class="register" disabled>Register</button>
 	</div>
-	<div class="version">{$version}</div>
+	<div class="version">v{$version} &mdash; © IzKuipers</div>
 </div>

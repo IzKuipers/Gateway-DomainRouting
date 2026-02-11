@@ -5,6 +5,7 @@
 	import { onMount } from 'svelte';
 	import '../css/main.css';
 	import Login from './Login.svelte';
+	import DialogRenderer from './DialogRenderer.svelte';
 
 	let { children } = $props();
 	const { authenticated } = Authorization;
@@ -29,3 +30,5 @@
 {:else}
 	<Login />
 {/if}
+
+<DialogRenderer/>
