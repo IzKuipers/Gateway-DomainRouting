@@ -1,0 +1,28 @@
+div.blocking-loader {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: var(--background-transparent);
+	backdrop-filter: blur(5px);
+	transition: opacity 0.3s;
+	pointer-events: none;
+	opacity: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+div.blocking-loader.fixed {
+	position: fixed;
+}
+
+div.blocking-loader.visible {
+	pointer-events: initial;
+	opacity: 1;
+}
+
+div.blocking-loader img {
+	height: 32px;
+}

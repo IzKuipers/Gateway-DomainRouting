@@ -1,0 +1,48 @@
+div.sidebar {
+	width: 250px;
+	height: 100%;
+	border-right: var(--border-clr) 1px solid;
+	padding: 15px;
+}
+
+div.sidebar h1 {
+	opacity: 0.5;
+	padding: 0 7px;
+	margin-bottom: 3px;
+}
+
+div.sidebar button {
+	width: 100%;
+	padding: 0 7px;
+	height: 30px;
+	display: flex;
+	align-items: center;
+	gap: 15px;
+	text-align: left;
+	background-color: transparent;
+	border-radius: 10px;
+	border: none;
+	color: var(--foreground);
+	margin-bottom: 2px;
+}
+
+div.sidebar button span.server-name {
+	margin-left: auto;
+	opacity: 0.5;
+}
+
+div.sidebar button span.lucide {
+	font-size: 16px;
+	color: var(--accent-light);
+}
+
+div.sidebar button:hover {
+	background-color: var(--button-bg);
+}
+div.sidebar button:active {
+	background-color: var(--button-active-bg);
+}
+
+div.sidebar button.selected {
+    background-color: var(--accent-transparent);
+}

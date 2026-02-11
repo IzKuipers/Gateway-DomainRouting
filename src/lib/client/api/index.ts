@@ -85,7 +85,7 @@ export class Backend {
 
 	public static async getAllServers(): Promise<CommandResult<ClientTypes.Response.Server[]>> {
 		try {
-			const response = await this.client.delete(`/server/list`);
+			const response = await this.client.get(`/server/list`);
 
 			return CommandResult.Ok<ClientTypes.Response.Server[]>(response.data);
 		} catch (e) {
@@ -103,9 +103,12 @@ export class Backend {
 		}
 	}
 
-	public static async updateServer(update: ClientTypes.Requests.UpdateServer): Promise<CommandResult<ClientTypes.Response.UpdateResult>> {
+	public static async updateServer(
+		serverId: string,
+		update: ClientTypes.Requests.UpdateServer
+	): Promise<CommandResult<ClientTypes.Response.UpdateResult>> {
 		try {
-			const response = await this.client.post(`/server/create`, update);
+			const response = await this.client.patch(`/server/${serverId}/update`, update);
 
 			return CommandResult.Ok<ClientTypes.Response.UpdateResult>(response.data);
 		} catch (e) {
@@ -115,7 +118,7 @@ export class Backend {
 
 	public static async deleteServer(serverId: string): Promise<CommandResult<ClientTypes.Response.DeleteResult>> {
 		try {
-			const response = await this.client.post(`/server/${serverId}/delete`);
+			const response = await this.client.delete(`/server/${serverId}/delete`);
 
 			return CommandResult.Ok<ClientTypes.Response.DeleteResult>(response.data);
 		} catch (e) {

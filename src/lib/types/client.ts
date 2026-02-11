@@ -15,6 +15,7 @@ export namespace ClientTypes {
 		}
 
 		export interface User {
+			_id: string;
 			username: string;
 			createdAt: string;
 			updatedAt: string;
@@ -22,6 +23,7 @@ export namespace ClientTypes {
 		}
 
 		export interface Server {
+			_id: string;
 			displayName: string;
 			serverName: string;
 			address: string;
@@ -32,6 +34,7 @@ export namespace ClientTypes {
 		}
 
 		export interface Domain {
+			_id: string;
 			server: string; // -> GatewayServer._id
 			value: string;
 			enabled: boolean;
@@ -54,16 +57,17 @@ export namespace ClientTypes {
 		}
 
 		export interface Token {
+			_id: string;
 			userId: string;
 			value: string;
 			createdAt: string;
 			updatedAt: string;
 		}
 
-    export interface Ping {
-      ping: string;
-      version: string;
-    }
+		export interface Ping {
+			ping: string;
+			version: string;
+		}
 	}
 
 	export namespace Requests {
@@ -91,18 +95,19 @@ export namespace ClientTypes {
 			serverName?: string;
 			address?: string;
 			port?: number;
+			enabled?: boolean;
 		}
 	}
 
-  export interface DialogData {
-    title: string;
-    message: string;
-    icon: string;
-    buttons: DialogButton[];
-  }
+	export interface DialogData {
+		title: string;
+		message: string;
+		icon: string;
+		buttons: DialogButton[];
+	}
 
-  export interface DialogButton {
-    caption: string;
-    action: () => void;
-  }
+	export interface DialogButton {
+		caption: string;
+		action: () => void;
+	}
 }

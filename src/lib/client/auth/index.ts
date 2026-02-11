@@ -61,7 +61,9 @@ export class Authorization {
 	static async logout() {
 		if (!this.authenticated()) return;
 
+		this.loading.set(true);
 		await Backend.logout();
 		this.resetAuthorization();
+		this.loading.set(false);
 	}
 }

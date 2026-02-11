@@ -1,7 +1,11 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import url('https://unpkg.com/lucide-static@0.563.0/font/lucide.css');
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap');
 @import url('./login.css');
 @import url('./loadingscreen.css');
+@import url('./blockingloader.css');
 @import url('./root.css');
+@import url('./topbar.css');
+@import url('./sidebar.css');
 
 html,
 body {
@@ -10,9 +14,10 @@ body {
 }
 
 body {
-	font-family: 'Inter';
+	font-family: 'Nunito Sans';
 	background-color: var(--background);
 	color: var(--foreground);
+	font-size: 14px;
 }
 
 * {
@@ -21,4 +26,27 @@ body {
 	padding: 0;
 	font-family: inherit;
 	outline: none;
+	font-size: inherit;
+}
+
+div.main {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+}
+
+div.main > div.page {
+	height: 0;
+	flex-grow: 1;
+	overflow: hidden;
+	display: flex;
+	align-items: start;
+}
+
+div.main > div.page > div.content {
+	width: 0;
+	flex-grow: 1;
+	height: 100%;
+	overflow: hidden;
+	padding: 15px;
 }

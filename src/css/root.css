@@ -1,9 +1,13 @@
 :root {
 	--background: #222222;
-	--border-clr: #333333;
+	--background-transparent: #222222aa;
+	--border-clr: #3a3a3a;
 	--foreground: #dddddd;
 	--accent: #e04424;
 	--accent-light: #ff693f;
+	--accent-dark: #8a4a3b;
+	--accent-transparent: #ff693f44;
+	--accent-darkest: #1f0701;
 	--button-bg: #333;
 	--button-hover-bg: #444;
 	--button-active-bg: #1a1a1a;

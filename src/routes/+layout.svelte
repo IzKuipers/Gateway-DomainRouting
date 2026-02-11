@@ -1,34 +1,34 @@
 <script lang="ts">
 	import { Backend } from '$lib/client/api';
 	import { Authorization } from '$lib/client/auth';
-	import { Logo } from '$lib/client/images';
+	import { Spinner } from '$lib/client/images';
 	import { onMount } from 'svelte';
 	import '../css/main.css';
-	import Login from './Login.svelte';
 	import DialogRenderer from './DialogRenderer.svelte';
+	import Login from './Login.svelte';
+	import SideBar from './SideBar.svelte';
+	import TopBar from './TopBar.svelte';
+	import Authenticated from './Authenticated.svelte';
+	import BlockingLoader from './BlockingLoader.svelte';
 
 	let { children } = $props();
-	const { authenticated } = Authorization;
-	const { version } = Backend;
-
-	let loading = $state<boolean>(true);
+	const { authenticated, loading } = Authorization;
 
 	onMount(async () => {
 		await Backend.ping();
 		await Authorization.loadToken();
-		loading = false;
+		$loading = false;
 	});
 </script>
 
-{#if loading}
-	<div class="loading-screen">
-		<img src={Logo} alt="" />
-		<p class="version">{$version}</p>
-	</div>
+{#if $loading}
+	<BlockingLoader fixed visible />
 {:else if $authenticated}
-	{@render children()}
+	<Authenticated>
+		{@render children()}
+	</Authenticated>
 {:else}
 	<Login />
 {/if}
 
-<DialogRenderer/>
+<DialogRenderer />
